@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="25" height="19" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="[Base]BaseChip_pipo.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJz7y8DA8JGBoYFWmJURbH7CT6A9tMJ/GEbtGLVj1I5RO0btGG52sNCh/gDZ8RdoB9AeB1phoPkHAD0k4jk=
+  </data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAfkGIhrEaHGZUm1TwlJLFsoBk5WMwxAYrFMkNodBCLpkeJCDePglEwCkbBKBgF+AAADX8DYQ==
+  </data>
+ </layer>
+ <layer id="3" name="Tile Layer 3" width="25" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBi+4BozA4McC4IfyYxgX0dixyCxrwDZ8kh6RsEoGAWjYBSMAkoBAOHzA4s=
+  </data>
+ </layer>
+</map>
