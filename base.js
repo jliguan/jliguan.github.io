@@ -340,7 +340,7 @@ function bulletHitTrojanHandler (bullet, trojan){
     trojan.kill();
     trojan_kill_count++;
     
-    if (trojan_kill_count > 5) {
+    if (trojan_kill_count > 15) {
         hector_stage_begin();
     }
 
