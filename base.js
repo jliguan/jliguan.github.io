@@ -12,6 +12,8 @@ function preload() {
     game.load.bitmapFont('greekfont', 'font.png', 'font.fnt');
         game.load.image('hector_stage', 'sprites/hectorstage.png');
         game.load.image('hector', 'sprites/hector.png');
+        game.load.image('hectorhpbar','sprites/hpbar.png');
+
 
 }
 
@@ -75,9 +77,6 @@ var enemy_shoot_timer;
 
 var trojan_kill_count = 0;
 
-var hectortext;
-var fighttext;
-
 var hector_stage;
 
 var hector_stage_yet = false;
@@ -94,6 +93,13 @@ var hector_roll;
 
 var stop_shooting = true;
 
+var timer1;
+var timer2;
+var timer3;
+
+var hectortext;
+var fighttext;
+var hector_bar;
 
 function create() {
  
@@ -101,6 +107,10 @@ function create() {
    
     hector_stage = game.add.sprite(0, 0, 'hector_stage');
     hector_stage.alpha = 0;
+    
+     hector_bar = game.add.sprite(0, 0, 'hectorhpbar');
+    hector_bar.alpha = 0;
+    
 
     hector = game.add.sprite((game.width / 2), 70, 'hector');
     hector.anchor.setTo(0.5, 0.5);
@@ -159,6 +169,17 @@ function create() {
     trojan_bullet_group.setAll('outOfBoundsKill', true);
 
 
+    timer1 = game.time.create(false);
+    timer2 = game.time.create(false);
+    timer3 = game.time.create(false);
+    
+    hectortext = game.add.bitmapText((game.width / 2), -50, 'greekfont', 'Hector,', 40);
+    hectortext.anchor.setTo(0.5, 0.5);
+    
+    fighttext = game.add.bitmapText((game.width / 2), -100, 'greekfont', 'Fight me!', 40);
+    fighttext.anchor.setTo(0.5, 0.5);
+    
+    
 }
 
 function update() {
@@ -209,35 +230,73 @@ function update() {
         hector_stage.alpha += 1;
         hector.alpha += 1;
         
+        hector_bar.alpha += 1;
+        
         game.physics.arcade.overlap(hector, bullets, bulletHitHectorHandler, null, this); 
+        
+//        killtxt();
         
     }
     
     
+    
+}
+
+function killtxt(){
+    
+//    hectortext.y 
+//    
+//    hectortext.kill();
+//    fighttext.kill();
+    game.world.remove(hectortext);
+    game.world.remove(fighttext);
 }
 
 function hector_stage_begin () {
     timer.stop();
+    enemy_shoot_timer.stop();
+    
         game.add.tween(background).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
     
-       game.time.events.add(Phaser.Timer.SECOND * 8, make_hector_text, this);
+    timer1.add(8000, make_hector_text, this);
+    timer1.start();
 
     
 }
 
 function make_hector_text() {
         
-    hectortext = game.add.bitmapText((game.width / 2), 50, 'greekfont', 'Hector,', 40);
-        hectortext.anchor.setTo(0.5, 0.5);
-
-    game.time.events.add(Phaser.Timer.SECOND * 2, make_fight_text, this);
+//    hectortext = game.add.bitmapText((game.width / 2), 50, 'greekfont', 'Hector,', 40);
+//        hectortext.anchor.setTo(0.5, 0.5);
+    
+    hectortext.y = 50;
+    
+//    game.time.events.add(Phaser.Timer.SECOND * 2, make_fight_text, this);
+    timer2.add(2000, make_fight_text, this);
+    timer2.start();
+    
 }
 
 function make_fight_text() {
-     fighttext = game.add.bitmapText((game.width / 2), 100, 'greekfont', 'Fight me!', 40);
-        fighttext.anchor.setTo(0.5, 0.5);
+            
+    fighttext.y = 100;
+
+//     fighttext = game.add.bitmapText((game.width / 2), 100, 'greekfont', 'Fight me!', 40);
+//        fighttext.anchor.setTo(0.5, 0.5);
     
-        game.time.events.add(Phaser.Timer.SECOND * 2, text_disappear, this);
+//     fighttext = game.add.text((game.width / 2), 100, "Fight me!", {
+//        font: "40px greek",
+//        fill: "#000000",
+//        align: "center"
+//    });
+
+    fighttext.anchor.setTo(0.5, 0.5);
+    
+//        game.physics.arcade.enable([ hectortext, fighttext ]);
+
+//        game.time.events.add(Phaser.Timer.SECOND * 2, text_disappear, this);
+    timer3.add(2000, text_disappear, this);
+    timer3.start();
 
 
         
@@ -246,6 +305,8 @@ function make_fight_text() {
 
 function text_disappear() {
 
+    hectortext.y = -50;
+    fighttext.y = -100;
 //    hectortext.kill();
 //    fighttext.kill();
     hector_stage_yet = true;
@@ -302,6 +363,7 @@ function bulletHitHectorHandler(hector, bullet) {
         victory();
     }
     hector_hp = hector_hp - 1;
+    hector_bar.x -= 5;
 
     bullet.kill();
 }
@@ -325,6 +387,7 @@ function gameover () {
     
         timer.stop();
     isGameOver = true;
+    stop_shooting = false;
 
 
     diedtext = game.add.bitmapText((game.width / 2), 200, 'greekfont', 'YOU DIED', 80);
@@ -391,7 +454,7 @@ function hector_begin_shoot() {
     
         hec_timer = game.time.create(false);
         hec_timer.start();
-        hec_timer.loop(game.rnd.integerInRange(500, 750), hector_shoot, this);
+        hec_timer.loop(game.rnd.integerInRange(250, 500), hector_shoot, this);
     
 }
 
@@ -400,7 +463,7 @@ function hector_shoot() {
     if (stop_shooting){
         trojan_bullet = trojan_bullet_group.create(hector.x, hector.y, 'trojan_javelin');
         trojan_bullet.anchor.setTo(0.5,0.5);
-        trojan_bullet.body.velocity.y = 75;
+//        trojan_bullet.body.velocity.y = 75;
          
          var randx = game.rnd.integerInRange(0, 800);
          var randy = game.rnd.integerInRange(70, 600);
@@ -410,3 +473,4 @@ function hector_shoot() {
 
     }
 }
+
